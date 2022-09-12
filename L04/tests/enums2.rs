@@ -15,6 +15,7 @@ impl Message {
     }
 }
 
+#[cfg(test)]
 fn main() {
     let messages = [
         Message::Move { _x: 10, _y: 30 },
