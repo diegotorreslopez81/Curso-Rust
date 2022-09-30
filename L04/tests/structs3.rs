@@ -25,7 +25,7 @@ impl Package {
     }
 
     fn is_international(&self) -> bool {
-        if self.sender_country == self.recipient_country { 
+        if self.sender_country != self.recipient_country { 
             return true; 
         } else { 
             return false; 
@@ -55,7 +55,7 @@ mod tests {
         let sender_country = String::from("Spain");
         let recipient_country = String::from("Russia");
 
-        let package = Package::new(sender_country, recipient_country, 1200);
+        let package = Package::new(sender_country, recipient_country, 1200);  
 
         assert!(package.is_international());
     }

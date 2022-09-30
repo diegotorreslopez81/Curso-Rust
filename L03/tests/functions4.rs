@@ -4,11 +4,6 @@
 // in the signatures for now. If anything, this is a good way to peek ahead
 // to future exercises!)
 
-// I AM NOT DONE
-
-
-
-
 #[cfg(test)]
 mod tests {
 
@@ -24,11 +19,10 @@ mod tests {
         num % 2 == 0
     }
 
-
-
     #[test]
     fn call_function() {
         let original_price = 51;
         println!("Your sale price is {}", sale_price(original_price));
     }
+
 }

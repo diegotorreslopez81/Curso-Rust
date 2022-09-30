@@ -1,9 +1,6 @@
-// I AM NOT DONE
-
-
-
 #[cfg(test)]
 mod tests {
+
     #[test]
     fn call_function() {
         let answer = square(3);
