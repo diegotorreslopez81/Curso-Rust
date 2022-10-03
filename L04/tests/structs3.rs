@@ -2,8 +2,6 @@
 // defined the Package struct and we want to test some logic attached to it.
 // Make the code compile and the tests pass!
 
-// I AM NOT DONE
-
 #[derive(Debug)]
 struct Package {
     sender_country: String,
