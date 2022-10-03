@@ -1,13 +1,10 @@
 // You can bring module paths into scopes and provide new names for them with the
 // 'use' and 'as' keywords. Fix these 'use' statements to make the code compile.
 
-
-// I AM NOT DONE
-
 mod delicious_snacks {
     // TODO: Fix these use statements
-    use self::fruits::PEAR as ???
-    use self::veggies::CUCUMBER as ???
+    pub use self::fruits::PEAR as fruit;
+    pub use self::veggies::CUCUMBER as veggie;
 
     mod fruits {
         pub const PEAR: &'static str = "Pear";
@@ -23,6 +20,7 @@ mod delicious_snacks {
 
 #[cfg(test)]
 mod tests {
+    use crate::delicious_snacks;
 
     #[test]
     fn test_modules() {
