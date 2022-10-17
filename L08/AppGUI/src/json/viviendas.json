@@ -1,0 +1,29 @@
+[
+  {
+    "id": "1",
+    "calle": "Calle Mayor",
+    "numPiso": "12",
+    "cp": "08030",
+    "m2": "88",
+    "numBanos": "1",
+    "numHabitaciones": "3"
+  },
+  {
+    "id": "6",
+    "calle": "Calle San Juan",
+    "numPiso": "142",
+    "cp": "28030",
+    "m2": "123",
+    "numBanos": "2",
+    "numHabitaciones": "5"
+  },
+  {
+    "id": "2",
+    "calle": "Calle La Franja",
+    "numPiso": "43",
+    "cp": "18035",
+    "m2": "102",
+    "numBanos": "2",
+    "numHabitaciones": "4"
+  }
+]
