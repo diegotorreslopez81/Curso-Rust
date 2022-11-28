@@ -1,18 +1,19 @@
+#![allow(non_snake_case)]
 // use std::{io::SeekFrom, intrinsics::caller_location};
-use std::io::SeekFrom;
+use std::{io::SeekFrom, os::unix::prelude};
 
 
 use fltk::{
     app::{self, App}, enums,
     prelude::{GroupExt, WidgetExt},
-    window::{self, DoubleWindow}, button::Button,
+    window::{self, DoubleWindow}, button::Button, menu::{Choice, MenuItem}, 
 };
 use fltk_table::{SmartTable, TableOpts};
 
-use fltk::{app::*, browser::*, button::*, enums::*, input::*, prelude::*, window::*};
+use fltk::{app::*, browser::*, enums::*, input::*, prelude::*, window::*};
 use serde::__private::de;
 
-const WIDGET_WIDTH: i32 = 70;
+const WIDGET_WIDTH: i32 = 100;
 const WIDGET_HEIGHT: i32 = 25;
 const WIDGET_PADDING: i32 = 10;
 
@@ -25,6 +26,28 @@ enum Message {
     Filter,
     Save,
 }
+
+#[derive(Debug)]
+enum TipoVivienda {
+    Piso,
+    Casa,
+    Trastero,
+    Local
+}
+
+
+
+impl TipoVivienda {
+    fn as_str(&self) -> &'static str {
+        match self {
+            TipoVivienda::Piso => "Piso",
+            TipoVivienda::Casa => "Casa",
+            TipoVivienda::Trastero => "Trastero",
+            TipoVivienda::Local => "Local"
+        }
+    }
+}
+
 
 use crate::entidad::{Vivienda, ScreenOutput};
 use crate::entidad::ViviendaDAO;
@@ -45,6 +68,7 @@ pub struct GUI{
     m2_input : Input,
     numBanos_input : Input,
     numHabitaciones_input : Input,
+    tipoVivienda_input : Choice,
     create_button : Button,
     update_button : Button,
     delete_button : Button,
@@ -62,11 +86,12 @@ impl GUI {
         .with_pos(WIDGET_PADDING + WIDGET_WIDTH * 2, WIDGET_PADDING)
         .with_label("Filter prefix:");
 
-        let mut list_browser = HoldBrowser::default().with_pos(
+        let mut list_browser = HoldBrowser::default()
+        .with_pos(
             WIDGET_PADDING,
             filter_input.y() + filter_input.height() + WIDGET_PADDING,
         )
-        .with_size(WIDGET_WIDTH * 3, WIDGET_HEIGHT * 4);
+        .with_size(filter_input.width() * 6, filter_input.height() * 10);
 
         let id_input = Input::default()
         .with_size(WIDGET_WIDTH, WIDGET_HEIGHT)
@@ -106,15 +131,37 @@ impl GUI {
         .below_of(&numBanos_input, WIDGET_PADDING)
         .with_label("Habitaciones:");
 
-        // let name_input = Input::default()
-        // .with_size(WIDGET_WIDTH, WIDGET_HEIGHT)
-        // .below_of(&ident_input, WIDGET_PADDING)
-        // .with_label("Nombres:");
 
-        // let surname_input = Input::default()
-        // .with_size(WIDGET_WIDTH, WIDGET_HEIGHT)
-        // .below_of(&name_input, WIDGET_PADDING)
-        // .with_label("Apellidos:");
+        let mut tipoVivienda_input = Choice::default()
+        .with_size(WIDGET_WIDTH, WIDGET_HEIGHT)
+        .below_of(&numHabitaciones_input, WIDGET_PADDING)
+        .with_label("Tipo Vivienda:");
+        // tipoVivienda_input.add_choice("Choice 1| Choice 2| choice 3");
+
+        let piso = TipoVivienda::Piso;
+        let strPiso = format!("{:?}", piso);
+        let casa = TipoVivienda::Casa;
+        let strCasa = format!("{:?}", casa);
+        let local = TipoVivienda::Local;
+        let strLocal = format!("{:?}", local);
+        let trastero = TipoVivienda::Trastero;
+        let strTrastero = format!("{:?}", trastero);
+
+        //let mut choices = concat!(strPiso.to_string() , "|" , strCasa , "|" , strLocal , "|" , strTrastero , "|");
+        // let mut choices = strPiso.to_string();
+        // choices.push_str("|");
+        // choices.push_str(&strCasa);
+        // choices.push_str("|");
+        // choices.push_str(&strTrastero);
+        // choices.push_str("|");
+        // choices.push_str(&strLocal);
+        // tipoVivienda_input.add_choice(&choices);
+        
+        tipoVivienda_input.add_choice("No definido");
+        tipoVivienda_input.add_choice(&strPiso.to_string());
+        tipoVivienda_input.add_choice(&strCasa.to_string());
+        tipoVivienda_input.add_choice(&strTrastero.to_string());
+        tipoVivienda_input.add_choice(&strLocal.to_string());
 
         let mut create_button = Button::default()
             .with_size(WIDGET_WIDTH, WIDGET_HEIGHT)
@@ -141,7 +188,7 @@ impl GUI {
 
         let viviendaDAO = ViviendaDAO::new();
         let model = viviendaDAO.asVector();
-
+        
         GUI {
             app : app,
             wind : wind,
@@ -158,6 +205,7 @@ impl GUI {
             m2_input : m2_input,
             numBanos_input : numBanos_input,
             numHabitaciones_input : numHabitaciones_input,
+            tipoVivienda_input : tipoVivienda_input,
             create_button : create_button,
             update_button : update_button,
             delete_button : delete_button,
@@ -200,6 +248,7 @@ impl GUI {
         self.m2_input.set_value("");
         self.numBanos_input.set_value("");
         self.numHabitaciones_input.set_value("");
+        self.tipoVivienda_input.set_value(0);
     }
 
     pub fn show(&mut self) {
@@ -215,7 +264,8 @@ impl GUI {
                         cp: self.cp_input.value(), 
                         m2: self.m2_input.value(), 
                         numBanos: self.numBanos_input.value(), 
-                        numHabitaciones: self.numHabitaciones_input.value() 
+                        numHabitaciones: self.numHabitaciones_input.value(),
+                        tipoVivienda: self.tipoVivienda_input.value().to_string()
                     });
                     self.clear_edit();
                     self.sender.send(Message::Filter);
@@ -235,6 +285,15 @@ impl GUI {
                                 vivienda.m2 = self.m2_input.value();
                                 vivienda.numBanos = self.numBanos_input.value();
                                 vivienda.numHabitaciones = self.numHabitaciones_input.value();
+                                let tipoV= self.tipoVivienda_input.value();
+                                match tipoV {
+                                    0 => vivienda.tipoVivienda = "Piso".to_string(),
+                                    1 => vivienda.tipoVivienda = "Casa".to_string(),
+                                    2 => vivienda.tipoVivienda = "Trastero".to_string(),
+                                    3 => vivienda.tipoVivienda = "Local".to_string(),
+                                    _ => vivienda.tipoVivienda = "No definido".to_string()
+                                }
+                                // vivienda.tipoVivienda = self.tipoVivienda_input.value().to_string();
 
                                 self.clear_edit();
                                 self.sender.send(Message::Filter);
@@ -295,6 +354,17 @@ impl GUI {
                                 self.m2_input.set_value(&vivienda.m2);
                                 self.numBanos_input.set_value(&vivienda.numBanos);
                                 self.numHabitaciones_input.set_value(&vivienda.numHabitaciones);
+                                
+                                let tipoV: String= vivienda.tipoVivienda.to_owned().to_string();
+                                
+                                match tipoV.as_str() {
+                                    "Piso" => self.tipoVivienda_input.set_value(1),
+                                    "Casa" => self.tipoVivienda_input.set_value(2),
+                                    "Local" => self.tipoVivienda_input.set_value(3),
+                                    "Trastero" => self.tipoVivienda_input.set_value(4),
+                                    _ => self.tipoVivienda_input.set_value(0),
+                                };
+
                                 self.update_button.activate();
                                 self.delete_button.activate();
                             },

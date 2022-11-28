@@ -1,12 +1,33 @@
 [
   {
+    "id": "3",
+    "calle": "joseli",
+    "numPiso": "32",
+    "cp": "656",
+    "m2": "333",
+    "numBanos": "3",
+    "numHabitaciones": "2",
+    "tipoVivienda": "Casa"
+  },
+  {
     "id": "1",
     "calle": "Calle Mayor",
     "numPiso": "12",
     "cp": "08030",
     "m2": "88",
     "numBanos": "1",
-    "numHabitaciones": "3"
+    "numHabitaciones": "3",
+    "tipoVivienda": "Casa"
+  },
+  {
+    "id": "2",
+    "calle": "San Pedro",
+    "numPiso": "45",
+    "cp": "080808",
+    "m2": "334",
+    "numBanos": "2",
+    "numHabitaciones": "45",
+    "tipoVivienda": "Piso"
   },
   {
     "id": "6",
@@ -15,15 +36,7 @@
     "cp": "28030",
     "m2": "123",
     "numBanos": "2",
-    "numHabitaciones": "5"
-  },
-  {
-    "id": "2",
-    "calle": "Calle La Franja",
-    "numPiso": "43",
-    "cp": "18035",
-    "m2": "102",
-    "numBanos": "2",
-    "numHabitaciones": "4"
+    "numHabitaciones": "5",
+    "tipoVivienda": "Casa"
   }
 ]
