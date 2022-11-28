@@ -1,10 +1,12 @@
-use std::{path::Path, fs::{File, self}, collections::HashMap};
+#![allow(non_snake_case)]
 
+use std::{path::Path, fs::{File, self}, collections::HashMap};
 use serde::{Deserialize, Serialize};
 
 pub trait ScreenOutput {
     fn toScreen(&self) -> String;
 }
+
 
 #[derive(Debug, Deserialize,Serialize,Clone)]
 #[serde(rename_all = "camelCase")]
@@ -15,7 +17,8 @@ pub struct Vivienda {
     pub cp : String,
     pub m2: String,
     pub numBanos: String,
-    pub numHabitaciones: String
+    pub numHabitaciones: String,
+    pub tipoVivienda: String
 }
 
 
@@ -23,7 +26,7 @@ pub struct Vivienda {
 impl ScreenOutput for Vivienda {
     fn toScreen(&self) -> String {
         // format!("{:?},{:?},{:?}",self.identificacion,self.nombres,self.apellidos)
-        format!("{:?},{:?},{:?},{:?},{:?},{:?},{:?}",self.id, self.calle, self.numPiso, self.cp, self.m2, self.numBanos, self.numHabitaciones)
+        format!("{:?},{:?},{:?},{:?},{:?},{:?},{:?},{:?}",self.id, self.calle, self.numPiso, self.cp, self.m2, self.numBanos, self.numHabitaciones, self.tipoVivienda)
     }
 }
 
