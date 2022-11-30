@@ -146,16 +146,6 @@ impl GUI {
         let strLocal = format!("{:?}", local);
         let trastero = TipoVivienda::Trastero;
         let strTrastero = format!("{:?}", trastero);
-
-        //let mut choices = concat!(strPiso.to_string() , "|" , strCasa , "|" , strLocal , "|" , strTrastero , "|");
-        // let mut choices = strPiso.to_string();
-        // choices.push_str("|");
-        // choices.push_str(&strCasa);
-        // choices.push_str("|");
-        // choices.push_str(&strTrastero);
-        // choices.push_str("|");
-        // choices.push_str(&strLocal);
-        // tipoVivienda_input.add_choice(&choices);
         
         tipoVivienda_input.add_choice("No definido");
         tipoVivienda_input.add_choice(&strPiso.to_string());
@@ -218,8 +208,6 @@ impl GUI {
         self.filter_input.emit(self.sender, Message::Filter);
 
         self.list_browser.emit(self.sender, Message::Select);        
-
-        //self.sender.send(Message::Filter);
 
         self.create_button.emit(self.sender, Message::Create);
 
